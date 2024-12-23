@@ -4,69 +4,86 @@ const operatorBtn = document.querySelectorAll(".operators");
 const clearBtn = document.querySelector(".clear");
 const equalBtn = document.querySelector(".equal");
 
-let firstNumBox = "";
-let operatorBox = "";
-let secondNumBox = "";
-let resultBox = "";
-let resultDisBox = "0";
+let firstNumBox = null;
+let operatorBox = null;
+let secondNumBox = null;
+let resultBox = "0";
+updateResult();
 
 btns.forEach((btn) => {
   btn.addEventListener("click", () => {
-    if (!operatorBox) {
-      firstNumBox += btn.textContent;
+    if (operatorBox === null) {
+      firstNumBox = (firstNumBox === null ? "" : firstNumBox) + btn.textContent;
     } else {
-      secondNumBox += btn.textContent;
+      secondNumBox =
+        (secondNumBox === null ? "" : secondNumBox) + btn.textContent;
     }
-    resultDisplay();
+    updateDisplay(); // Update display with current input
   });
 });
 
 operatorBtn.forEach((op) => {
   op.addEventListener("click", () => {
-    if (!operatorBox) {
-      firstNumBox = resultBox;
-      secondNumBox = "";
+    if (firstNumBox !== null && secondNumBox === null) {
+      operatorBox = op.textContent; // Set operator
+      updateDisplay(); // Update display
     }
-    operatorBox = op.innerHTML;
-    console.log(operatorBox);
-    resultDisplay();
   });
 });
 
 equalBtn.addEventListener("click", () => {
-  resultBox = "";
-  let result = "";
-  if (operatorBox == "-") {
-    result = firstNumBox - secondNumBox;
-  } else if (operatorBox == "/") {
-    result = firstNumBox / secondNumBox;
-  } else if (operatorBox == "x") {
-    result = firstNumBox * secondNumBox;
-  } else if (operatorBox == "+") {
-    result = Number(firstNumBox) + Number(secondNumBox);
-  } else if (operatorBox == "%") {
-    result = firstNumBox % secondNumBox;
+  if (firstNumBox !== null && operatorBox !== null && secondNumBox !== null) {
+    let num1 = parseFloat(firstNumBox);
+    let num2 = parseFloat(secondNumBox);
+    let result = 0;
+
+    switch (operatorBox) {
+      case "+":
+        result = num1 + num2;
+        break;
+      case "-":
+        result = num1 - num2;
+        break;
+      case "x":
+        result = num1 * num2;
+        break;
+      case "/":
+        if (num2 === 0) {
+          result = "Error";
+        } else {
+          result = num1 / num2;
+        }
+        break;
+      default:
+        result = "Error";
+    }
+
+    resultBox = result.toString();
+    firstNumBox = resultBox;
+    operatorBox = null;
+    secondNumBox = null;
+    updateResult();
   }
-  resultBox += result;
-  operatorBox = "";
-  resultFunc();
-});
-clearBtn.addEventListener("click", () => {
-  resultBox = "";
-  firstNumBox = "";
-  operatorBox = "";
-  secondNumBox = "";
-  resultDisBox = 0;
-  resultHTML.value = resultDisBox;
 });
 
-function operationDis() {
-  resultHTML.value = resultDisBox;
+clearBtn.addEventListener("click", () => {
+  firstNumBox = null;
+  operatorBox = null;
+  secondNumBox = null;
+  resultBox = "";
+  resultHTML.value = "0";
+});
+
+function updateDisplay() {
+  if (firstNumBox === null && secondNumBox === null) {
+    resultHTML.value = "0"; // If nothing is entered, show 0
+  } else {
+    resultHTML.value = `${firstNumBox || ""} ${operatorBox || ""} ${
+      secondNumBox || ""
+    }`;
+  }
 }
-function resultDisplay() {
-  resultDisBox = `${firstNumBox} ${operatorBox} ${secondNumBox}`;
-  resultHTML.value = resultDisBox;
-}
-function resultFunc() {
+
+function updateResult() {
   resultHTML.value = resultBox;
 }
