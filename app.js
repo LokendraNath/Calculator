@@ -1,5 +1,5 @@
-const resultHTML = document.querySelector(".display-box");
-const btns = document.querySelectorAll(".btn");
+const displayBox = document.querySelector(".display-box");
+const numbers = document.querySelectorAll(".btn");
 const operatorBtn = document.querySelectorAll(".operators");
 const clearBtn = document.querySelector(".clear");
 const equalBtn = document.querySelector(".equal");
@@ -10,7 +10,7 @@ let secondNumBox = null;
 let resultBox = "0";
 updateResult();
 
-btns.forEach((btn) => {
+numbers.forEach((btn) => {
   btn.addEventListener("click", () => {
     if (operatorBox === null) {
       firstNumBox = (firstNumBox === null ? "" : firstNumBox) + btn.textContent;
@@ -71,19 +71,19 @@ clearBtn.addEventListener("click", () => {
   operatorBox = null;
   secondNumBox = null;
   resultBox = "";
-  resultHTML.value = "0";
+  displayBox.value = "0";
 });
 
 function updateDisplay() {
   if (firstNumBox === null && secondNumBox === null) {
-    resultHTML.value = "0"; // If nothing is entered, show 0
+    displayBox.value = "0"; // If nothing is entered, show 0
   } else {
-    resultHTML.value = `${firstNumBox || ""} ${operatorBox || ""} ${
+    displayBox.value = `${firstNumBox || ""} ${operatorBox || ""} ${
       secondNumBox || ""
     }`;
   }
 }
 
 function updateResult() {
-  resultHTML.value = resultBox;
+  displayBox.value = resultBox;
 }
